@@ -8,14 +8,17 @@ source = """
 Programa de prueba de Synapse
 */
 
-int a <- 15 ::
+int a <- 10 ::
+int b <- 5 ::
 
-if gt(a, 20){
-    int x <- 20 ::
-    print x ::
+if and(
+    gt(a, b),
+    lt(b, a)
+) {
+
+    print "OK" ::
+
 }
-
-print x ::
 
 """
 
@@ -33,3 +36,6 @@ printer.print(tree)
 semantic = SemanticAnalyzer()
 semantic.visit(tree)
 print(semantic.symbol_table)
+
+for token in tokens:
+    print(token)

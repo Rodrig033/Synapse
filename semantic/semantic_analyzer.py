@@ -32,10 +32,10 @@ class SemanticAnalyzer:
         for statement in node.statements:
             self.visit(statement)
 
-    # Implementación
+    # La declaración debe prohibirse dentro del mismo scope. 
     def visit_VariableDeclaration(self, node):
         existing = (
-            self.symbol_table.lookup(
+            self.symbol_table.lookup_current_scope(
                 node.name
             )
         )
@@ -208,7 +208,27 @@ class SemanticAnalyzer:
             raise SemanticError(
                 f"El operador '{node.operator}' "
                 f"solo admite operandos numéricos."
-            )
-        
+            )        
+
         
         return destination_type
+    
+    def visit_BoooleanExpression(self, node):
+        left_type = self.visit(node.left)
+
+        if left_type != "bool":
+            raise SemanticError(
+                f"El operador '{node.operator}' "
+                f"espera un operado booleano."
+            )
+        
+        if node.right is not None:
+            right_type = self.visit(node.right)
+
+            if right_type != "bool":
+                raise SemanticError(
+                    f"El operador '{node.operator}' "
+                    f"espera operados booleanos."
+                )
+            
+        return "bool"

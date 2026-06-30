@@ -9,7 +9,8 @@ from syn_ast.expressions import (
     FloatLiteral,
     CharLiteral,
     BooleanLiteral,
-    ComparisonExpression
+    ComparisonExpression,
+    BooleanExpression
 )
 from syn_ast.statements import PrintStatement
 from syn_ast.statements import IfStatement
@@ -89,7 +90,8 @@ class Parser:
         )
 
     def expression(self):
-
+        #
+        print("expression:", self.current)
         token = self.current
 
         if token.type == TokenType.ENTERO:
@@ -128,6 +130,24 @@ class Parser:
             return Identifier(
                 token.lexeme
             )
+        
+        elif token.type in {
+            TokenType.OP_GT,
+            TokenType.OP_LT,
+            TokenType.OP_EQ,
+            TokenType.OP_NEQ,
+            TokenType.OP_GE,
+            TokenType.OP_LE
+        }:
+            
+            return self.comparison_expression()
+        
+        elif token.type in {
+            TokenType.AND,
+            TokenType.OR,
+            TokenType.NOT
+        }:
+            return self.boolean_expression()
         
         raise ParserError(
             f"Expresión inválida: "
@@ -171,8 +191,8 @@ class Parser:
             value
         )
         
-    def condition(self):
-
+    def comparison_expression(self):
+        print("comparison_expression:", self.current)
         operator = self.current.lexeme
         self.advance()
 
@@ -192,13 +212,48 @@ class Parser:
             TokenType.PARENTESIS_DER
         )
 
-        return ComparisonExpression(operator, left, right)        
+        return ComparisonExpression(operator, left, right)
+    
+    def boolean_expression(self):
+        #
+        print("boolean_expression:", self.current)
+        operator = self.current.lexeme
+        self.advance()
+
+        self.match(
+            TokenType.PARENTESIS_IZQ
+        )
+
+        left = self.condition()
+        right = None
+
+        if operator != "not":
+            self.match(
+                TokenType.COMA
+            )
+
+            right = self.condition()
+
+        self.match(
+            TokenType.PARENTESIS_DER
+        )
+
+        return BooleanExpression(operator, left, right)
+    
+
+    def condition(self):
+
+        expr = self.expression()
+
+        return expr
 
     def if_statement(self):
 
         self.match(TokenType.IF)
 
         condition = self.condition()
+        # 
+        print("Después de condition:", self.current)
 
         self.match(
             TokenType.LLAVE_IZQ
@@ -338,3 +393,4 @@ class Parser:
             left,
             right
         )
+    

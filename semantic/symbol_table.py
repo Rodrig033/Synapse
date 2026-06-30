@@ -17,7 +17,13 @@ class SymbolTable:
             if name in scope:
                 return scope[name]
         return None
+    
+    def lookup_current_scope(self, name):
+        return self.scopes[-1].get(name)
 
+    # Importante para las funciones
+    def current_scope(self):
+        return self.scopes[-1]
 
     def __repr__(self):
         return str(self.scopes)

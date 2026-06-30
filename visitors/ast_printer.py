@@ -275,4 +275,37 @@ class ASTPrinter:
 
         print(prefix + "│   └── Right:")
         self.visit(node.right, prefix + "    ")
-            
+    
+    def visit_BooleanExpression(self, node, prefix):
+        
+        print(
+            prefix +
+            "└── BooleanExpression"
+        )
+
+        print(
+            prefix +
+            f"    ├── Operator: {node.operator}"
+        )
+
+        print(
+            prefix +
+            "    ├── Left"
+        )
+
+        self.visit(
+            node.left,
+            prefix + "    │   "
+        )
+
+        if node.right is not None:
+
+            print(
+                prefix +
+                "    └── Right"
+            )
+
+            self.visit(
+                node.right,
+                prefix + "        "
+            )

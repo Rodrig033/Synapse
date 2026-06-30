@@ -78,6 +78,27 @@ class ArithmeticExpression(Expression):
         self.left = left
         self.right = right
 
+class BooleanExpression(Expression):
+    def __init__(self, operator, left, right=None):
+        self.operator = operator
+        self.left = left
+        self.right = right
+
+    def __repr__(self):
+        if self.right is None:
+            return (
+                f"Boolean Expression("
+                f"{self.operator}, "
+                f"{self.left})"
+            )
+        
+        return (
+            f"Boolean Expression("
+            f"{self.operator} "
+            f"{self.left} "
+            f"{self.right})"
+        )
+
 """ 
 FloatLiteral
 CharLiteral

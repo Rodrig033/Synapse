@@ -39,6 +39,10 @@ KEYWORDS = {
     "le": TokenType.OP_LE,
     "ge": TokenType.OP_GE,
 
+    "and": TokenType.AND,
+    "or": TokenType.OR,
+    "not": TokenType.NOT,
+
     "true": TokenType.BOOLEANO,
     "false": TokenType.BOOLEANO
 }
@@ -152,6 +156,7 @@ class Lexer:
             TokenType.IDENTIFICADOR
         )
 
+        print(lexema, token_type)
         return Token(
             token_type,
             lexema

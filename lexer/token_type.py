@@ -68,4 +68,8 @@ class TokenType(Enum):
     # Utilidades
     EOF = auto()
 
+    # Operaciones Booleanas 
+    AND = auto()
+    OR = auto()
+    NOT = auto()
     
