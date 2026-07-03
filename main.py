@@ -10,15 +10,12 @@ source = """
 Programa de prueba de Synapse
 */
 
-int a <- 20 ::
-int b <- 4 ::
-int r <- 0 ::
+int a <- 10 ::
+int b <- 5 ::
 
-add(r, a, b) ::
-sub(r, a, b) ::
-mul(r, a, b) ::
-div(r, a, b) ::
-mod(r, a, b) ::
+if gt(a, b) {
+    print "mayor" ::
+}
 
 """
 

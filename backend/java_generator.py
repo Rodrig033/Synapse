@@ -26,6 +26,18 @@ class JavaGenerator:
         }
 
         return mapping[operator]
+    
+    def java_operator(self, operator):
+        mapping = {
+            "gt": ">",
+            "lt": "<",
+            "eq": "==",
+            "neq": "!=",
+            "ge": ">=",
+            "le": "<="
+        }
+
+        return mapping[operator]
 
     def visit(self, node):
 
@@ -85,7 +97,7 @@ class JavaGenerator:
         return str(node.value)
 
     def visit_FloatLiteral(self, node):
-        return str(node.value)
+        return f"{node.value}f"
     
     def visit_StringLiteral(self, node):
         return f'"{node.value}"'
@@ -107,3 +119,60 @@ class JavaGenerator:
         self.writer.writeln(
             f"{node.destination} = {left} {operator} {right};"
         )
+    def visit_ComparisonExpression(self, node):
+        operators = {
+            "gt": ">",
+            "lt": "<",
+            "eq": "==",
+            "neq": "!=",
+            "ge": ">=",
+            "le": "<="
+        }
+
+        left = self.visit(node.left)
+        right = self.visit(node.right)
+
+        operator = operators[node.operator]
+
+        return f"{left} {operator} {right}"
+    
+    def visit_BooleanExpression(self, node):
+        operators = {
+            "and" : "&&",
+            "or"  : "||"
+        }
+
+        if node.operator == "not":
+            expression = self.visit(node.left)
+            return f"!({expression})"
+        
+        left = self.visit(node.left)
+        right = self.visit(node.right)
+
+        operator = operators[node.operator]
+        
+        return f"({left}) {operator} ({right})"
+    
+    def visit_IfStatement(self, node):
+        condition = self.visit(node.condition)
+
+        self.writer.writeln( f"if ({condition}) {{")
+        self.writer.indent()
+
+        for statement in node.then_body:
+            self.visit(statement)
+        
+        self.writer.dedent()
+        self.writer.writeln("}")
+
+        if node.else_body:
+            self.writer.writeln("else {")
+            self.writer.indent()
+
+            for statement in node.else_body:
+                self.visit(statement)
+            
+            self.writer.dedent()
+            self.writer.writeln("}")
+
+    # While y scopes ...
