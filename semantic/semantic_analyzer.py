@@ -104,26 +104,34 @@ class SemanticAnalyzer:
         self.visit(node.expression)
 
     def visit_ComparisonExpression(self, node):
-        left_type = self.visit(
-            node.left
-        )
 
-        right_type = self.visit(
-            node.right
-        )
+        left_type = self.visit(node.left)
+        right_type = self.visit(node.right)
 
         if left_type != right_type:
-
             raise SemanticError(
-                f"No se puede comparar "
-                f"{left_type} con "
-                f"{right_type}"
+                f"No se puede comparar un {left_type} "
+                f"con un {right_type}."
+            )
+
+        if left_type not in ("int", "float", "char", "string"):
+            raise SemanticError(
+                f"El operador '{node.operator}' "
+                f"no admite operandos de tipo "
+                f"{left_type}."
             )
         
+        # Toda comparación produce un booleano
         return "bool"
     
     def visit_IfStatement(self, node):
-        self.visit(node.condition)
+        condition_type = self.visit(node.condition)
+        
+        # Compara el tipo 
+        if condition_type != "bool":
+            raise SemanticError(
+                "La condición del if debe ser booleana."
+            )
 
         # Scope del THEN
         self.symbol_table.enter_scope()
@@ -135,7 +143,6 @@ class SemanticAnalyzer:
 
         # Scope del ELSE
         if node.else_body:
-
             self.symbol_table.enter_scope()
 
             for statement in node.else_body:
@@ -144,8 +151,13 @@ class SemanticAnalyzer:
             self.symbol_table.exit_scope()
 
     def visit_WhileStatement(self, node):
+        condition_type = self.visit(node.condition)
 
-        self.visit(node.condition)
+        # Compara el tipo
+        if condition_type != "bool":
+            raise SemanticError(
+                "La condición del while debe ser booleana."
+            )
 
         self.symbol_table.enter_scope()
 
@@ -210,25 +222,24 @@ class SemanticAnalyzer:
                 f"solo admite operandos numéricos."
             )        
 
-        
         return destination_type
     
-    def visit_BoooleanExpression(self, node):
+    def visit_BooleanExpression(self, node):
+
         left_type = self.visit(node.left)
 
         if left_type != "bool":
             raise SemanticError(
-                f"El operador '{node.operator}' "
-                f"espera un operado booleano."
+                "La expresión izquierda debe ser booleana."
             )
-        
-        if node.right is not None:
+
+        if node.operator != "not":
+
             right_type = self.visit(node.right)
 
             if right_type != "bool":
                 raise SemanticError(
-                    f"El operador '{node.operator}' "
-                    f"espera operados booleanos."
+                    "La expresión derecha debe ser booleana."
                 )
-            
+
         return "bool"

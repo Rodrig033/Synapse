@@ -90,8 +90,6 @@ class Parser:
         )
 
     def expression(self):
-        #
-        print("expression:", self.current)
         token = self.current
 
         if token.type == TokenType.ENTERO:
@@ -192,7 +190,6 @@ class Parser:
         )
         
     def comparison_expression(self):
-        print("comparison_expression:", self.current)
         operator = self.current.lexeme
         self.advance()
 
@@ -215,8 +212,6 @@ class Parser:
         return ComparisonExpression(operator, left, right)
     
     def boolean_expression(self):
-        #
-        print("boolean_expression:", self.current)
         operator = self.current.lexeme
         self.advance()
 
@@ -252,9 +247,6 @@ class Parser:
         self.match(TokenType.IF)
 
         condition = self.condition()
-        # 
-        print("Después de condition:", self.current)
-
         self.match(
             TokenType.LLAVE_IZQ
         )
